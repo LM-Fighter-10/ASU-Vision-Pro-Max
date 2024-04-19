@@ -130,28 +130,26 @@
             <div class="frame-title">Click To Start!</div>
             <img id="frame" src="{% url 'video_feed' 0 %}" alt="">
         </div>
-        <div class="star-stopBtns">
+        <div class="start-stopBtns">
             <button id="stop" class="overflow-hidden relative w-32 p-2 h-12 bg-black text-white border-none rounded-md text-xl font-bold cursor-pointer relative z-10 group">
-              Stop
               <span class="absolute w-36 h-32 -top-8 -left-2 bg-red-200 rotate-12 transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-500 duration-1000 origin-right">
               </span>
               <span class="absolute w-36 h-32 -top-8 -left-2 bg-red-400 rotate-12 transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-700 duration-700 origin-right">
               </span>
               <span class="absolute w-36 h-32 -top-8 -left-2 bg-red-600 rotate-12 transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-1000 duration-500 origin-right">
               </span>
-              <span class="group-hover:opacity-100 group-hover:duration-1000 duration-100 opacity-0 absolute top-2.5 left-6 z-10">
+              <span class="group-hover:opacity-100 group-hover:duration-1000 duration-100 absolute top-2.5 left-6 z-10">
               Stop
               </span>
             </button>
             <button id="start" class="overflow-hidden relative w-32 p-2 h-12 bg-black text-white border-none rounded-md text-xl font-bold cursor-pointer relative z-10 group">
-          Start
           <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-200 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-500 duration-1000 origin-bottom">
           </span>
           <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-700 duration-700 origin-bottom">
           </span>
           <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-600 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-1000 duration-500 origin-bottom">
           </span>
-          <span class="group-hover:opacity-100 group-hover:duration-1000 duration-100 opacity-0 absolute top-2.5 left-6 z-10">
+          <span class="group-hover:opacity-100 group-hover:duration-1000 duration-100 absolute top-2.5 left-6 z-10">
           Start
           </span>
         </button>
@@ -218,17 +216,49 @@
         const start = document.getElementById('start');
         const frame = document.getElementById('frame');
         var flag = 0;
+        $("#stop").css("background-color", "gray");
+        $("#start").removeAttr('disabled');
+        $("#stop").attr('disabled', 'true');
+        $(".bg-red-200, .bg-red-400, .bg-red-600").each(function() {
+            $(this).css('opacity', '0');
+        });
         stop.addEventListener('click', () => {
+            $("#start").css("background-color", "");
+            $(".bg-blue-200, .bg-blue-400, .bg-blue-600").each(function() {
+                $(this).css('opacity', '1');
+            });
+            $("#stop").css("background-color", "gray");
+            $(".bg-red-200, .bg-red-400, .bg-red-600").each(function() {
+                $(this).css('opacity', '0');
+            });
+            $("#start").removeAttr('disabled');
+            $("#stop").attr('disabled', 'true');
             $("#frame").css('opacity', '0');
+            $("#frameDiv").empty();
             fetch("{% url 'video_feed' 0 %}")
+            $("#frameDiv").html("<div class='frame-title'>Click To Start!</div>" +
+                "<img id='frame' src='{% url 'video_feed' 0 %}' alt=''>");
         });
         start.addEventListener('click', () => {
+            $("#start").css("background-color", "gray");
+            $(".bg-blue-200, .bg-blue-400, .bg-blue-600").each(function() {
+                $(this).css('opacity', '0');
+            });
+            $("#start").attr('disabled', 'true');
+            $("#stop").removeAttr('disabled');
+            $("#stop").css("background-color", "");
+            $(".bg-red-200, .bg-red-400, .bg-red-600").each(function() {
+                $(this).css('opacity', '1');
+            });
             if (flag === 0){
                 $("#frame").attr('src', "{% url 'video_feed' 1 %}");
                 flag++;
             }
-            $("#frame").css('opacity', '1');
+            $("#frameDiv").empty();
             fetch("{% url 'video_feed' 1 %}")
+            $("#frameDiv").html("<div class='frame-title'>Click To Start!</div>" +
+                "<img id='frame' src='{% url 'video_feed' 1 %}' alt=''>");
+            $("#frame").css('opacity', '1');
         });
     </script>
 

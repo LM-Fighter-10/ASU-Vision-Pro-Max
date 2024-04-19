@@ -192,7 +192,7 @@ body {
   color: #ffff;
   gap: 10px;
   font-weight: bold;
-  border: 3px solid #ffffff4d;
+  border: 3px solid #2752ea;
   outline: none;
   overflow: hidden;
   font-size: 18px;
@@ -200,15 +200,17 @@ body {
   margin: 0 auto;
 }
 
+#start, #stop{
+  transition: background-color 0.3s ease-in-out;
+}
+
 .main-button a:hover {
   transform: scale(1.05);
-  border-color: #fff9;
   background-color: #1447ff;
 }
 
 .main-button a:active {
   transform: scale(0.95);
-  border-color: #fff9;
   background-color: #1447ff;
 }
 
@@ -1270,7 +1272,7 @@ preloader
 }
 
 .left-6 {
-    left: 2.5rem !important;
+    left: 2.408rem !important;
 }
 
 #frameDiv{
@@ -1299,16 +1301,16 @@ preloader
     width: 100%;
     position: absolute;
 }
-.star-stopBtns > button{
+.start-stopBtns > button{
   outline: none;
   transform: scale(1.2);
   transition: all 0.1s ease-in-out;
 }
-.star-stopBtns > button:active{
+.start-stopBtns > button:active{
   transform: scale(1.15);
 }
 
-.star-stopBtns{
+.start-stopBtns {
   display: flex;
   justify-content: space-evenly;
   grid-column: 2;
