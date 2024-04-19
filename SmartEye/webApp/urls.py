@@ -6,4 +6,6 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.home, name='homePage'),
+    path('stopStream/', views.stopStream, name='stopStream'),
+    path('video_feed/<int:isstream>', views.video_feed, name='video_feed')
 ]
