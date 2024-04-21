@@ -1288,6 +1288,7 @@ preloader
 
 #frame{
   height: 100%;
+  width: 100%;
   position: absolute;
   transition: all 0.3s ease-in-out;
 }
@@ -1306,7 +1307,10 @@ preloader
   transform: scale(1.2);
   transition: all 0.1s ease-in-out;
 }
-.start-stopBtns > button:active{
+.start-stopBtns > button[disabled]{
+  cursor: default;
+}
+.start-stopBtns > button:active:not([disabled]){
   transform: scale(1.15);
 }
 

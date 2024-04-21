@@ -5,6 +5,8 @@ import torch
 import cv2
 import numpy as np
 from ultralytics import YOLO
+from pathlib import Path  # Import Path from pathlib
+
 
 def home(request):
     context = {
@@ -58,6 +60,14 @@ def stream(isstream):
                     color = (255, 0, 0)
                     thickness = 2
                     cv2.putText(img, label_text, org, font, fontScale, color, thickness)
+
+        # Call write_results to get additional information
+        frame_number = int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the frame number as an integer
+        p = Path(f'frame_{frame_number}.jpg')  # Create a Path object with the frame number
+        log_string = model.predictor.getClasses(0)
+
+        # Display the log_string on the image
+        cv2.putText(img, log_string, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # Convert the processed frame to JPEG format
         ret, jpeg = cv2.imencode('.jpg', img)
