@@ -17,7 +17,7 @@ def home(request):
     return render(request, "home.html", context)
 
 # load model
-model = YOLO('webApp/models/best.pt')
+model = YOLO('webApp/models/best (Large).pt')
 
 var = 0
 print(torch.cuda.is_available())
