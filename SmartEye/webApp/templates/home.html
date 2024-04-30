@@ -206,16 +206,18 @@
     <script src="{% static 'js/accordions.js' %}"></script>
     
     <!-- Global Init -->
-    <script src="{% static 'js/custom.js' %}">document.addEventListener('DOMContentLoaded', function() {
+    <script src="{% static 'js/custom.js' %}">
+        document.addEventListener('DOMContentLoaded', function() {
         var vid = document.getElementById('backgroundVideo');
         vid.playbackRate = 0.5;  // Adjust playback rate here, 0.5 is half speed
-    });</script>
+    });
+    </script>
 
     <script>
         const stop = document.getElementById('stop');
         const start = document.getElementById('start');
         const frame = document.getElementById('frame');
-        var flag = 0;
+        var flag = 0, refreshCam = null;
         $("#stop").css("background-color", "gray");
         $("#start").removeAttr('disabled');
         $("#stop").attr('disabled', 'true');
@@ -238,6 +240,7 @@
             fetch("{% url 'video_feed' 0 %}")
             $("#frameDiv").html("<div class='frame-title'>Click To Start!</div>" +
                 "<img id='frame' src='{% url 'video_feed' 0 %}' alt=''>");
+            clearInterval(refreshCam);
         });
         start.addEventListener('click', () => {
             $("#start").css("background-color", "gray");
@@ -259,6 +262,20 @@
             $("#frameDiv").html("<div class='frame-title'>Click To Start!</div>" +
                 "<img id='frame' src='{% url 'video_feed' 1 %}' alt=''>");
             $("#frame").css('opacity', '1');
+            setTimeout(()=>{
+                refreshCam = setInterval(() => {
+                    fetch('{% url 'fetchClasses' %}')
+                    .then(response => response.json())
+                    .then(data => {
+                        var cup = data.Cup;
+                        var female = data.Female;
+                        // To Be Continued ....
+{% comment %}                        for (const item of classes){
+                            console.log(item); // Number of the detected items in each class
+                        }{% endcomment %}
+                    });
+                }, 25);
+            }, 1500)
         });
     </script>
 

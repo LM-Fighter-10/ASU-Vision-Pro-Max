@@ -21,6 +21,9 @@ model = YOLO('webApp/models/best (Large).pt')
 
 var = 0
 print(torch.cuda.is_available())
+
+classesStr = ""
+
 def stream(isstream):
     global var
     var = isstream
@@ -65,6 +68,8 @@ def stream(isstream):
         frame_number = int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the frame number as an integer
         p = Path(f'frame_{frame_number}.jpg')  # Create a Path object with the frame number
         log_string = model.predictor.getClasses(0)
+        global classesStr
+        classesStr = log_string
 
         # Display the log_string on the image
         cv2.putText(img, log_string, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
@@ -77,6 +82,86 @@ def stream(isstream):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
+
+def fetchClasses(request):
+    global classesStr
+    temp = classesStr
+    cupNum = 0
+    femaleNum = 0
+    maleNum = 0
+    phoneNum = 0
+    glassesNum = 0
+    headphoneNum = 0
+    keyboardNum = 0
+    laptopNum = 0
+    penNum = 0
+    shoeNum = 0
+    if not temp.__contains__('('):
+        if temp.__contains__('Cup'):
+            if temp.split(' Cup')[0].__contains__(', '):
+                cupNum = int(temp.split(' Cup')[0].split(', ')[1])
+            else:
+                cupNum = int(temp.split(' Cup')[0])
+        if temp.__contains__('Female'):
+            if temp.split(' Female')[0].__contains__(', '):
+                femaleNum = int(temp.split(' Female')[0].split(', ')[1])
+            else:
+                femaleNum = int(temp.split(' Female')[0])
+        if temp.__contains__('Male'):
+            if temp.split(' Male')[0].__contains__(', '):
+                maleNum = int(temp.split(' Male')[0].split(', ')[1])
+            else:
+                maleNum = int(temp.split(' Male')[0])
+        if temp.__contains__('Phone'):
+            if temp.split(' Phone')[0].__contains__(', '):
+                phoneNum = int(temp.split(' Phone')[0].split(', ')[1])
+            else:
+                phoneNum = int(temp.split(' Phone')[0])
+        if temp.__contains__('Glasses'):
+            if temp.split(' Glasses')[0].__contains__(', '):
+                glassesNum = int(temp.split(' Glasses')[0].split(', ')[1])
+            else:
+                glassesNum = int(temp.split(' Glasses')[0])
+        if temp.__contains__('Headphone'):
+            if temp.split(' Headphone')[0].__contains__(', '):
+                headphoneNum = int(temp.split(' Headphone')[0].split(', ')[1])
+            else:
+                headphoneNum = int(temp.split(' Headphone')[0])
+        if temp.__contains__('Keyboard'):
+            if temp.split(' Keyboard')[0].__contains__(', '):
+                keyboardNum = int(temp.split(' Keyboard')[0].split(', ')[1])
+            else:
+                keyboardNum = int(temp.split(' Keyboard')[0])
+        if temp.__contains__('Laptop'):
+            if temp.split(' Laptop')[0].__contains__(', '):
+                laptopNum = int(temp.split(' Laptop')[0].split(', ')[1])
+            else:
+                laptopNum = int(temp.split(' Laptop')[0])
+        if temp.__contains__('Pen'):
+            if temp.split(' Pen')[0].__contains__(', '):
+                penNum = int(temp.split(' Pen')[0].split(', ')[1])
+            else:
+                penNum = int(temp.split(' Pen')[0])
+        if temp.__contains__('Shoe'):
+            if temp.split(' Female')[0].__contains__(', '):
+                shoeNum = int(temp.split(' Shoe')[0].split(', ')[1])
+            else:
+                shoeNum = int(temp.split(' Shoe')[0])
+    list = []
+    list.append(cupNum)
+    list.append(femaleNum)
+    list.append(maleNum)
+    list.append(phoneNum)
+    list.append(glassesNum)
+    list.append(headphoneNum)
+    list.append(keyboardNum)
+    list.append(laptopNum)
+    list.append(penNum)
+    list.append(shoeNum)
+    context = {'Cup': cupNum, 'Female': femaleNum, 'Male': maleNum,
+               'Phone': phoneNum, 'Glasses': glassesNum, 'Headphone': headphoneNum,
+               'Keyboard': keyboardNum, 'Laptop': laptopNum, 'Pen': penNum, 'Shoe': shoeNum}
+    return JsonResponse(context)
 
 def video_feed(request, isstream):
     return StreamingHttpResponse(stream(isstream), content_type='multipart/x-mixed-replace; boundary=frame')
