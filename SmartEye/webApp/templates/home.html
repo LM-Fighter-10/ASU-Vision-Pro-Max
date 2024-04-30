@@ -3,7 +3,6 @@
 <html lang="en">
 
   <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -19,9 +18,10 @@
 
     <link rel="stylesheet" href="{% static 'css/templatemo-training-studio.css' %}">
 
-    </head>
+    <link rel="icon" href="{% static 'images/favicon.png' %}">
+  </head>
     
-    <body>
+  <body>
     
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
@@ -143,16 +143,16 @@
               </span>
             </button>
             <button id="start" class="overflow-hidden relative w-32 p-2 h-12 bg-black text-white border-none rounded-md text-xl font-bold cursor-pointer relative z-10 group">
-          <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-200 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-500 duration-1000 origin-bottom">
-          </span>
-          <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-700 duration-700 origin-bottom">
-          </span>
-          <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-600 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-1000 duration-500 origin-bottom">
-          </span>
-          <span class="group-hover:opacity-100 group-hover:duration-1000 duration-100 absolute top-2.5 left-6 z-10">
-          Start
-          </span>
-        </button>
+              <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-200 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-500 duration-1000 origin-bottom">
+              </span>
+              <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-700 duration-700 origin-bottom">
+              </span>
+              <span class="absolute w-36 h-32 -top-8 -left-2 bg-blue-600 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform group-hover:duration-1000 duration-500 origin-bottom">
+              </span>
+              <span class="group-hover:opacity-100 group-hover:duration-1000 duration-100 absolute top-2.5 left-6 z-10">
+              Start
+              </span>
+            </button>
         </div>
 
     </section>
@@ -189,7 +189,7 @@
             </div>
         </div>
     </footer>
-
+    <!-- ****** Footer End ****** -->
     <!-- jQuery -->
     <script src="{% static 'js/jquery-2.1.0.min.js' %}"></script>
 
@@ -214,9 +214,14 @@
     </script>
 
     <script>
-        const stop = document.getElementById('stop');
-        const start = document.getElementById('start');
-        const frame = document.getElementById('frame');
+        const stop = document.getElementById('stop'),
+              start = document.getElementById('start'), frame = document.getElementById('frame'),
+              cup = document.getElementById('countCup'), female = document.getElementById('countFemale'),
+              male = document.getElementById('countMale'), phone = document.getElementById('countPhone'),
+              glasses = document.getElementById('countGlasses'), headphone = document.getElementById('countHeadphone'),
+              keyboard = document.getElementById('countKeyboard'), laptop = document.getElementById('countLaptop'),
+              pen = document.getElementById('countPen'), shoe = document.getElementById('countShoe');
+
         var flag = 0, refreshCam = null;
         $("#stop").css("background-color", "gray");
         $("#start").removeAttr('disabled');
@@ -267,14 +272,12 @@
                     fetch('{% url 'fetchClasses' %}')
                     .then(response => response.json())
                     .then(data => {
-                        var cup = data.Cup;
-                        var female = data.Female;
-                        // To Be Continued ....
-{% comment %}                        for (const item of classes){
-                            console.log(item); // Number of the detected items in each class
-                        }{% endcomment %}
+                        cup.innerHTML = data.Cup; female.innerHTML = data.Female; male.innerHTML = data.Male;
+                        phone.innerHTML = data.Phone; glasses.innerHTML = data.Glasses;
+                        headphone.innerHTML = data.Headphone; keyboard.innerHTML = data.Keyboard;
+                        laptop.innerHTML = data.Laptop; pen.innerHTML = data.Pen; shoe.innerHTML = data.Shoe;
                     });
-                }, 25);
+                }, 10);
             }, 1500)
         });
     </script>

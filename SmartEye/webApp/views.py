@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 from pathlib import Path  # Import Path from pathlib
+from collections import Counter
 
 
 def home(request):
@@ -16,13 +17,15 @@ def home(request):
     }
     return render(request, "home.html", context)
 
+
 # load model
 model = YOLO('webApp/models/best (Large).pt')
 
 var = 0
-print(torch.cuda.is_available())
+# print(torch.cuda.is_available())
 
 classesStr = ""
+
 
 def stream(isstream):
     global var
@@ -34,6 +37,9 @@ def stream(isstream):
     while True and var == 1:
         success, img = cap.read()
         results = model(img, stream=True)
+
+        # Initialize an empty list to store classes with confidence >= 50%
+        valid_classes = []
 
         # Process detection results
         for r in results:
@@ -47,6 +53,9 @@ def stream(isstream):
 
                 # Filter out detections with confidence < 50%
                 if confidence >= 50:
+                    # Append class name to valid_classes list
+                    valid_classes.append(class_name)
+
                     # Extract bounding box coordinates
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
 
@@ -64,15 +73,18 @@ def stream(isstream):
                     thickness = 2
                     cv2.putText(img, label_text, org, font, fontScale, color, thickness)
 
+        # Concatenate valid_classes to form log_string
+        log_string = ', '.join(valid_classes)
+
+        # Display the log_string on the image
+        # cv2.putText(img, log_string, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
         # Call write_results to get additional information
         frame_number = int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the frame number as an integer
         p = Path(f'frame_{frame_number}.jpg')  # Create a Path object with the frame number
-        log_string = model.predictor.getClasses(0)
         global classesStr
         classesStr = log_string
-
-        # Display the log_string on the image
-        cv2.putText(img, log_string, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        print(classesStr)
 
         # Convert the processed frame to JPEG format
         ret, jpeg = cv2.imencode('.jpg', img)
@@ -86,85 +98,24 @@ def stream(isstream):
 def fetchClasses(request):
     global classesStr
     temp = classesStr
-    cupNum = 0
-    femaleNum = 0
-    maleNum = 0
-    phoneNum = 0
-    glassesNum = 0
-    headphoneNum = 0
-    keyboardNum = 0
-    laptopNum = 0
-    penNum = 0
-    shoeNum = 0
-    if not temp.__contains__('('):
-        if temp.__contains__('Cup'):
-            if temp.split(' Cup')[0].__contains__(', '):
-                cupNum = int(temp.split(' Cup')[0].split(', ')[1])
-            else:
-                cupNum = int(temp.split(' Cup')[0])
-        if temp.__contains__('Female'):
-            if temp.split(' Female')[0].__contains__(', '):
-                femaleNum = int(temp.split(' Female')[0].split(', ')[1])
-            else:
-                femaleNum = int(temp.split(' Female')[0])
-        if temp.__contains__('Male'):
-            if temp.split(' Male')[0].__contains__(', '):
-                maleNum = int(temp.split(' Male')[0].split(', ')[1])
-            else:
-                maleNum = int(temp.split(' Male')[0])
-        if temp.__contains__('Phone'):
-            if temp.split(' Phone')[0].__contains__(', '):
-                phoneNum = int(temp.split(' Phone')[0].split(', ')[1])
-            else:
-                phoneNum = int(temp.split(' Phone')[0])
-        if temp.__contains__('Glasses'):
-            if temp.split(' Glasses')[0].__contains__(', '):
-                glassesNum = int(temp.split(' Glasses')[0].split(', ')[1])
-            else:
-                glassesNum = int(temp.split(' Glasses')[0])
-        if temp.__contains__('Headphone'):
-            if temp.split(' Headphone')[0].__contains__(', '):
-                headphoneNum = int(temp.split(' Headphone')[0].split(', ')[1])
-            else:
-                headphoneNum = int(temp.split(' Headphone')[0])
-        if temp.__contains__('Keyboard'):
-            if temp.split(' Keyboard')[0].__contains__(', '):
-                keyboardNum = int(temp.split(' Keyboard')[0].split(', ')[1])
-            else:
-                keyboardNum = int(temp.split(' Keyboard')[0])
-        if temp.__contains__('Laptop'):
-            if temp.split(' Laptop')[0].__contains__(', '):
-                laptopNum = int(temp.split(' Laptop')[0].split(', ')[1])
-            else:
-                laptopNum = int(temp.split(' Laptop')[0])
-        if temp.__contains__('Pen'):
-            if temp.split(' Pen')[0].__contains__(', '):
-                penNum = int(temp.split(' Pen')[0].split(', ')[1])
-            else:
-                penNum = int(temp.split(' Pen')[0])
-        if temp.__contains__('Shoe'):
-            if temp.split(' Female')[0].__contains__(', '):
-                shoeNum = int(temp.split(' Shoe')[0].split(', ')[1])
-            else:
-                shoeNum = int(temp.split(' Shoe')[0])
-    list = []
-    list.append(cupNum)
-    list.append(femaleNum)
-    list.append(maleNum)
-    list.append(phoneNum)
-    list.append(glassesNum)
-    list.append(headphoneNum)
-    list.append(keyboardNum)
-    list.append(laptopNum)
-    list.append(penNum)
-    list.append(shoeNum)
-    context = {'Cup': cupNum, 'Female': femaleNum, 'Male': maleNum,
-               'Phone': phoneNum, 'Glasses': glassesNum, 'Headphone': headphoneNum,
-               'Keyboard': keyboardNum, 'Laptop': laptopNum, 'Pen': penNum, 'Shoe': shoeNum}
+    context = {'Cup': 0, 'Female': 0, 'Male': 0,
+               'Phone': 0, 'Glasses': 0, 'Headphone': 0,
+               'Keyboard': 0, 'Laptop': 0, 'Pen': 0, 'Shoe': 0}
+
+    if temp and not temp.__contains__('('):
+        # Split the string by ', ' and count occurrences of each class
+        counts = Counter(temp.split(', '))
+
+        for class_name, count in counts.items():
+            context[class_name] = count
+        print(context)
+
     return JsonResponse(context)
+
 
 def video_feed(request, isstream):
     return StreamingHttpResponse(stream(isstream), content_type='multipart/x-mixed-replace; boundary=frame')
+
 
 def stopStream(request):
     global var
