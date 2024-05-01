@@ -276,6 +276,9 @@
                         phone.innerHTML = data.Phone; glasses.innerHTML = data.Glasses;
                         headphone.innerHTML = data.Headphone; keyboard.innerHTML = data.Keyboard;
                         laptop.innerHTML = data.Laptop; pen.innerHTML = data.Pen; shoe.innerHTML = data.Shoe;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data !!!');
                     });
                 }, 10);
             }, 1500)

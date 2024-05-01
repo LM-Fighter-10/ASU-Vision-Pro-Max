@@ -84,7 +84,6 @@ def stream(isstream):
         p = Path(f'frame_{frame_number}.jpg')  # Create a Path object with the frame number
         global classesStr
         classesStr = log_string
-        print(classesStr)
 
         # Convert the processed frame to JPEG format
         ret, jpeg = cv2.imencode('.jpg', img)
@@ -108,7 +107,6 @@ def fetchClasses(request):
 
         for class_name, count in counts.items():
             context[class_name] = count
-        print(context)
 
     return JsonResponse(context)
 
