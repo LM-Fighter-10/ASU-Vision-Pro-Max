@@ -35,63 +35,69 @@ def stream(isstream):
     cap.set(4, 1080)
     classNames = ['Cup', 'Female', 'Glasses', 'Headphone', 'Keyboard', 'Laptop', 'Male', 'Pen', 'Phone', 'Shoe']
     while True and var == 1:
-        success, img = cap.read()
-        results = model(img, stream=True)
+        try:
+            success, img = cap.read()
+            results = model(img, stream=True)
 
-        # Initialize an empty list to store classes with confidence >= 50%
-        valid_classes = []
+            # Initialize an empty list to store classes with confidence >= 50%
+            valid_classes = []
 
-        # Process detection results
-        for r in results:
-            boxes = r.boxes
+            # Process detection results
+            for r in results:
+                boxes = r.boxes
 
-            for box in boxes:
-                # Extract confidence and class name
-                confidence = round(float(box.conf[0]) * 100, 2)
-                cls = int(box.cls[0])
-                class_name = classNames[cls]
+                for box in boxes:
+                    # Extract confidence and class name
+                    confidence = round(float(box.conf[0]) * 100, 2)
+                    cls = int(box.cls[0])
+                    class_name = classNames[cls]
 
-                # Filter out detections with confidence < 50%
-                if confidence >= 50:
-                    # Append class name to valid_classes list
-                    valid_classes.append(class_name)
+                    # Filter out detections with confidence < 50%
+                    if confidence >= 50:
+                        # Append class name to valid_classes list
+                        valid_classes.append(class_name)
 
-                    # Extract bounding box coordinates
-                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                        # Extract bounding box coordinates
+                        x1, y1, x2, y2 = map(int, box.xyxy[0])
 
-                    # Draw bounding box
-                    cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                        # Draw bounding box
+                        cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
 
-                    # Prepare label text (class name + confidence)
-                    label_text = f"{class_name}: {confidence}%"
+                        # Prepare label text (class name + confidence)
+                        label_text = f"{class_name}: {confidence}%"
 
-                    # Draw label on the image
-                    org = (x1, y1 - 10)  # Adjust position of label
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    fontScale = 0.9
-                    color = (255, 0, 0)
-                    thickness = 2
-                    cv2.putText(img, label_text, org, font, fontScale, color, thickness)
+                        # Draw label on the image
+                        org = (x1, y1 - 10)  # Adjust position of label
+                        font = cv2.FONT_HERSHEY_SIMPLEX
+                        fontScale = 0.9
+                        color = (255, 0, 0)
+                        thickness = 2
+                        cv2.putText(img, label_text, org, font, fontScale, color, thickness)
 
-        # Concatenate valid_classes to form log_string
-        log_string = ', '.join(valid_classes)
+            # Concatenate valid_classes to form log_string
+            log_string = ', '.join(valid_classes)
 
-        # Display the log_string on the image
-        # cv2.putText(img, log_string, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            # Display the log_string on the image
+            # cv2.putText(img, log_string, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
-        # Call write_results to get additional information
-        frame_number = int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the frame number as an integer
-        p = Path(f'frame_{frame_number}.jpg')  # Create a Path object with the frame number
-        global classesStr
-        classesStr = log_string
+            # Call write_results to get additional information
+            frame_number = int(cap.get(cv2.CAP_PROP_POS_FRAMES))  # Get the frame number as an integer
+            p = Path(f'frame_{frame_number}.jpg')  # Create a Path object with the frame number
+            global classesStr
+            classesStr = log_string
 
-        # Convert the processed frame to JPEG format
-        ret, jpeg = cv2.imencode('.jpg', img)
-        frame_bytes = jpeg.tobytes()
+            try:
+                # Convert the processed frame to JPEG format
+                ret, jpeg = cv2.imencode('.jpg', img)
+                frame_bytes = jpeg.tobytes()
+            except Exception as e:
+                continue
 
-        # Yield the frame as a stream
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+            # Yield the frame as a stream
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        except FileNotFoundError as f:
+            continue
 
 
 def fetchClasses(request):

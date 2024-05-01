@@ -246,6 +246,11 @@
             $("#frameDiv").html("<div class='frame-title'>Click To Start!</div>" +
                 "<img id='frame' src='{% url 'video_feed' 0 %}' alt=''>");
             clearInterval(refreshCam);
+            setTimeout(()=>{
+                cup.innerHTML = 0; female.innerHTML = 0; male.innerHTML = 0; shoe.innerHTML = 0;
+                headphone.innerHTML = 0; keyboard.innerHTML = 0; phone.innerHTML = 0; glasses.innerHTML = 0;
+                laptop.innerHTML = 0; pen.innerHTML = 0;
+            }, 100);
         });
         start.addEventListener('click', () => {
             $("#start").css("background-color", "gray");
@@ -268,19 +273,23 @@
                 "<img id='frame' src='{% url 'video_feed' 1 %}' alt=''>");
             $("#frame").css('opacity', '1');
             setTimeout(()=>{
-                refreshCam = setInterval(() => {
-                    fetch('{% url 'fetchClasses' %}')
-                    .then(response => response.json())
-                    .then(data => {
-                        cup.innerHTML = data.Cup; female.innerHTML = data.Female; male.innerHTML = data.Male;
-                        phone.innerHTML = data.Phone; glasses.innerHTML = data.Glasses;
-                        headphone.innerHTML = data.Headphone; keyboard.innerHTML = data.Keyboard;
-                        laptop.innerHTML = data.Laptop; pen.innerHTML = data.Pen; shoe.innerHTML = data.Shoe;
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data !!!');
-                    });
-                }, 10);
+                try {
+                    refreshCam = setInterval(() => {
+                        fetch('{% url 'fetchClasses' %}')
+                        .then(response => response.json())
+                        .then(data => {
+                            cup.innerHTML = data.Cup; female.innerHTML = data.Female; male.innerHTML = data.Male;
+                            phone.innerHTML = data.Phone; glasses.innerHTML = data.Glasses;
+                            headphone.innerHTML = data.Headphone; keyboard.innerHTML = data.Keyboard;
+                            laptop.innerHTML = data.Laptop; pen.innerHTML = data.Pen; shoe.innerHTML = data.Shoe;
+                        })
+                        .catch (error => {
+                            // ERROR HAPPENED
+                        });
+                    }, 10);
+                } catch (e) {
+                    // ERROR HAPPENED
+                }
             }, 1500)
         });
     </script>
