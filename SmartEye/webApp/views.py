@@ -19,7 +19,7 @@ def home(request):
 
 
 # load model
-model = YOLO('webApp/models/best (Large).pt')
+model = YOLO('webApp/models/best (Large 2).pt')
 
 var = 0
 # print(torch.cuda.is_available())
@@ -30,7 +30,7 @@ classesStr = ""
 def stream(isstream):
     global var
     var = isstream
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     cap.set(3, 1920)
     cap.set(4, 1080)
     classNames = ['Cup', 'Female', 'Glasses', 'Headphone', 'Keyboard', 'Laptop', 'Male', 'Pen', 'Phone', 'Shoe']

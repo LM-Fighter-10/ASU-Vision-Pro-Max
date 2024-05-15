@@ -156,18 +156,40 @@
         </div>
 
     </section>
-    <!-- ***** Features Item End ***** -->
-
     <!-- ***** Our Classes Start ***** -->
-    <section class="section-1" id="our-classes">
+    <section class="section-1" id="our-classes" style="margin-bottom: 40px !important;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <div class="section-heading">
-                        <h2>Our <em>Model</em></h2>
-                        <h2>YOLO V8</h2>
-                        <img src="{% static 'images/line-dec.png' %}" alt="">
+                    <div class="section-heading mb-0">
+                        <h2>About</h2>
                     </div>
+                </div>
+            </div>
+            <div class="row mt-4 justify-content-center">
+                <div class="col-lg-4">
+                    <img style="border-radius: 30px!important;" src="{% static 'images/computer_eye_for_web.webp' %}" alt="Object Detection" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-lg-6 d-flex justify-content-center flex-column">
+                    <p class="lead">
+                        Discover the power of modern computer vision with our state-of-the-art YOLO V8 model. Leveraging the latest advancements in machine learning and deep learning, YOLO V8 transforms object detection with unparalleled speed and accuracy. Unlike traditional two-stage detectors, our single-stage approach ensures faster and more efficient processing, making it ideal for real-time applications.
+                    </p>
+                    <p class="lead">
+                        With SmartEye's intuitive interface, users can effortlessly detect and track objects in real-time. The platform not only enhances operational efficiency but also provides actionable insights, making it an invaluable tool across various industries. Experience the seamless integration of technology and real-world application with SmartEye.
+                    </p>
+                </div>
+            </div>
+            <div class="row mt-4 justify-content-center">
+                <div class="col-lg-6 d-flex justify-content-center flex-column">
+                    <p class="lead">
+                        Our cutting-edge model, "SmartEye," is meticulously designed to detect ten specific classes with exceptional precision. By harnessing the capabilities of YOLO V8, SmartEye offers a seamless, user-friendly web application that enables real-time object detection and tracking. Whether for surveillance, automation, or any real-world application, SmartEye delivers reliable and insightful analytics.
+                    </p>
+                    <p class="lead">
+                        Join us in exploring the fusion of theoretical advancements and practical utility, as we drive innovation and efficiency in the field of object detection. Experience the future of computer vision with SmartEye and YOLO V8, where technology meets real-world needs.
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <img style="border-radius: 30px!important;" src="{% static 'images/object-detection.png' %}" alt="Object Detection" class="img-fluid rounded shadow">
                 </div>
             </div>
         </div>
@@ -178,13 +200,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright &copy; 2020 Training Studio
-                    
-                    - Designed by <a rel="nofollow" href="https://templatemo.com" class="tm-text-link" target="_parent">TemplateMo</a><br>
-
-                Distributed by <a rel="nofollow" href="https://themewagon.com" class="tm-text-link" target="_blank">ThemeWagon</a>
-                
-                </p>
+                    <div class="logo logoIcon">Smart <em style="color: #2752EA">EYE</em></div>
+                    <p>Copyright &copy; <span id="copyRightYear"></span> Training Studio - Designed by SmartEye Team</p>
                 </div>
             </div>
         </div>
@@ -214,6 +231,7 @@
     </script>
 
     <script>
+        document.getElementById('copyRightYear').innerHTML = new Date().getFullYear();
         const stop = document.getElementById('stop'),
               start = document.getElementById('start'), frame = document.getElementById('frame'),
               cup = document.getElementById('countCup'), female = document.getElementById('countFemale'),
